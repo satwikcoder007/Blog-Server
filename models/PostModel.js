@@ -16,6 +16,12 @@ const postSchema = mongoose.Schema({
       ref: "LikeModel",
     },
   ],
+  unlikes: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "LikeModel",
+    },
+  ],
   comments: [
     {
       type: mongoose.Schema.Types.ObjectId,

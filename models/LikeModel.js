@@ -8,6 +8,11 @@ const likeSchema = mongoose.Schema({
     user:{
         type:String,
         required: true,
+    },
+    value:{
+        type:Number,
+        enum:[0,1],
+        required:true,
     }
 });
 
