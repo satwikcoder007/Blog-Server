@@ -1,48 +1,53 @@
 const Register = require("../models/RegisterModel");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+const RegisterModel = require("../models/RegisterModel");
 
-const Login=async(req,res)=>{
-    try{
-        const {email,password}=req.body
-        
-        if(!email){
-            res.status(404).json({
-                success: false,
-                data: "can not find",
-                message: "chodna naki",
-              });  
-        }
+require("dotenv").config();
 
-        const user=await Register.findOne({email})
+const Login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
 
-        if(!user){
-            res.status(404).json({
-                success: false,
-                data: "User does not exist",
-                message: "chodna naki",
-            })
-        }
-
-        if(user.password!==password){
-           res.status(401).json({
-            success: false,
-            data: "Invalid Password",
-            message: "chodna naki",
-           })
-        }
-       
-
-        res.status(200).json({
-            success:true,
-            data:user,
-            message:"Correct"
-        })
-
+    if (!email || !password) {
+      throw new Error("Enter all field");
     }
-    catch(error){
 
-        console.log(error)
-
+    const user = await Register.findOne({ email });
+    console.log(user);
+    if (!user) {
+      throw new Error("User Not Found");
     }
-}
 
-module.exports=Login
+    if (!(await bcrypt.compare(password, user.password))) {
+      throw new Error("Password Invalid");
+    }
+
+    const accessPayload = {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+    };
+    const refreshPayload = {
+      id: user._id,
+      name: user.name,
+      user:user.user
+    };
+    console.log(refreshPayload);
+    const secretKey = process.env.SECRET_KEY;
+    // const accessToken = jwt.sign(accessPayload, secretKey, { expiresIn: "2h" });
+    const refreshToken = jwt.sign(refreshPayload, secretKey, {expiresIn: "30d"});
+    const data = await RegisterModel.findByIdAndUpdate(user._id,{token:refreshToken},{new:true});
+    res
+      .cookie("token", refreshToken , { httpOnly: true, expiresIn: "30d" })
+      .status(200)
+      .json({
+        success: true,
+        data:data
+      });
+  } catch (error) {
+    console.error("An error occurred:", error.message);
+  }
+};
+
+module.exports = Login;

@@ -1,21 +1,35 @@
 const RegisterModel = require("../models/RegisterModel");
+const bcrypt = require("bcrypt");
 
 const Register = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
-    const data = await RegisterModel.create({ name, email, password });
-    res.status(200).json({
-      success: true,
-      data: data,
-      message: "Data Send success",
-    });
+    var { name, email, password ,user} = req.body;
+    const check = await RegisterModel.findOne({ email });
+    if (check) {
+      throw new Error( "User already exist" )
+        
+      };
+     
+      const hashValue = await bcrypt.hash(password, 10);
+      const data = await RegisterModel.create({
+        name: name,
+        email: email,
+        password: hashValue,
+        user: user
+      });
+      res.status(200).json({
+        success: true,
+        data: data,
+        message: "Data Send success",
+      });
+    
   } catch (error) {
     res.status(500).json({
       success: false,
       data: "can not find",
-      message: "chodna naki",
+      message: error.message,
     });
   }
-}
+};
 
-module.exports=Register
+module.exports = Register;

@@ -11,9 +11,17 @@ const registerSchema = mongoose.Schema({
     unique: [true, "user already exists"],
   },
   password: {
-    type: Number,
+    type: String,
     required: true,
   },
+  user:{
+    type:String,
+    default:"random",
+    enum:["student","admin","random"],
+  },
+  token:{
+    type:String
+  }
 });
 
 module.exports = mongoose.model("RegisterModel",registerSchema);
