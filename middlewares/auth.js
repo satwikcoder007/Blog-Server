@@ -3,8 +3,14 @@ require("dotenv").config();
 
 const auth = (req,res,next)=>{
 
-    const token = req.body.token;
-    if(!token) throw new Error("user not signed in ");
+    const token = req.body.token || req.cookies.token
+    if(!token){
+       res.status(401).json({
+        success:false,
+        message:"user not loged in"
+       });
+       return;
+    };
 
     try{
 

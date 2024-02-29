@@ -18,6 +18,7 @@ const registerSchema = mongoose.Schema({
     type:String,
     default:"random",
     enum:["student","admin","random"],
+    lowercase:true
   },
   token:{
     type:String

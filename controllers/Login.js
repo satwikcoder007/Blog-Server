@@ -23,23 +23,16 @@ const Login = async (req, res) => {
       throw new Error("Password Invalid");
     }
 
-    const accessPayload = {
-      id: user._id,
-      name: user.name,
-      email: user.email,
-    };
     const refreshPayload = {
       id: user._id,
       name: user.name,
       user:user.user
     };
-    console.log(refreshPayload);
     const secretKey = process.env.SECRET_KEY;
-    // const accessToken = jwt.sign(accessPayload, secretKey, { expiresIn: "2h" });
     const refreshToken = jwt.sign(refreshPayload, secretKey, {expiresIn: "30d"});
     const data = await RegisterModel.findByIdAndUpdate(user._id,{token:refreshToken},{new:true});
     res
-      .cookie("token", refreshToken , { httpOnly: true, expiresIn: "30d" })
+      .cookie("token", refreshToken , { httpOnly: true, maxAge: 10000000000000 })
       .status(200)
       .json({
         success: true,
