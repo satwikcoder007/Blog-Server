@@ -15,6 +15,8 @@ export default function Register(props) {
   const handleSubmit = async()=>{
     const res= await axios.post("/api/v1//register",{...input})
     console.log(res);
+    props.closeRegister();
+    props.registerSuccess();
        
   }
   return (
