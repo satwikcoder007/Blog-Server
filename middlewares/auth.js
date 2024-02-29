@@ -11,7 +11,6 @@ const auth = (req,res,next)=>{
         const decode = jwt.verify(token,process.env.SECRET_KEY);
         console.log(decode);
         req.data = decode;
-        console.log("Returning from auth");
         return next();
     }
     catch(error)
