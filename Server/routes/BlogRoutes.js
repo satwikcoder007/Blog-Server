@@ -1,6 +1,7 @@
 const express = require("express");
-const routes = express.Router();
 
+
+const routes = express.Router();
 //Controllers
 const comment = require("../controllers/Comment");
 const like = require("../controllers/Like");
@@ -8,6 +9,8 @@ const create = require("../controllers/Create");
 const Register = require("../controllers/Register");
 const Login = require("../controllers/Login");
 const Logout = require("../controllers/Logout");
+const SendMail = require('../controllers/SendMail');
+const ChangePassWord=require("../controllers/ChangePassword");
 
 //Middlewares
 const auth = require("../middlewares/auth");
@@ -21,6 +24,8 @@ routes.post("/create", create);
 routes.post("/register", Register);
 routes.put("/login", Login);
 routes.get("/logout",auth,Logout);
+routes.post("/mail",SendMail);
+routes.post("/newpassword",auth,ChangePassWord);
 
 routes.get("/test", auth, (req, res) => {
   res.status(200).json({

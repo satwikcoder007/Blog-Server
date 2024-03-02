@@ -1,9 +1,10 @@
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
-const auth = (req,res,next)=>{
-
+const auth =  async(req,res,next)=>{
+ console.log('hello');
     const token = req.body.token || req.cookies.token
+    console.log(token);
     if(!token){
        res.status(401).json({
         success:false,
@@ -13,8 +14,10 @@ const auth = (req,res,next)=>{
     };
 
     try{
-
-        const decode = jwt.verify(token,process.env.SECRET_KEY);
+        console.log("inside-try")
+        const key=process.env.SECRET_KEY;
+        console.log(key);
+        const decode = jwt.verify(token,key);
         console.log(decode);
         req.data = decode;
         return next();

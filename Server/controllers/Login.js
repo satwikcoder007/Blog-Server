@@ -28,11 +28,19 @@ const Login = async (req, res) => {
       name: user.name,
       user:user.user
     };
+    const accessPayload = {
+      id: user._id,
+      email:user.email,
+      name: user.name,
+      user:user.user
+    }
     const secretKey = process.env.SECRET_KEY;
     const refreshToken = jwt.sign(refreshPayload, secretKey, {expiresIn: "30d"});
+    const accessToken = jwt.sign(accessPayload, secretKey , {expiresIn: "2h"});
     const data = await RegisterModel.findByIdAndUpdate(user._id,{token:refreshToken},{new:true});
     res
-      .cookie("token", refreshToken , { httpOnly: true, maxAge: 10000000000000 })
+      .cookie("refreshToken", refreshToken , { httpOnly: true, maxAge: 10000000000000 })
+      .cookie("accessToken",accessToken,{ httpOnly: true, maxAge: 100000000 })
       .status(200)
       .json({
         success: true,

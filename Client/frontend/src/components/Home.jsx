@@ -26,6 +26,7 @@ export default function Home() {
   const loginSuccess = () => {
     toast.success("Login Success");
   };
+  
 
   return (
     <div className=" h-screen w-screen relative overflow-x-hidden">

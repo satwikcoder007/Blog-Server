@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function Login(props) {
+  const navigate = useNavigate();
   const [input,setInput] = useState({
     email:"",
     password:""
@@ -10,10 +12,11 @@ export default function Login(props) {
     setInput({ ...input, [event.target.name]: event.target.value });
   };
   const handleSubmit = async()=>{
-    const res= await axios.put("/api/v1/login",{...input});
+    const res= await axios.put("/api/v1/login",{...input},{ withCredentials: true });
     console.log(res);
     props.closeSign();
-    props.loginSuccess();
+    navigate("/loginSuccess")
+    // props.loginSuccess();
   }
   return (
     <div className=" h-screen w-screen flex justify-center items-center">
@@ -48,6 +51,7 @@ export default function Login(props) {
             className=" text-black"
           />
         </div>
+        <div className=" text-black hover:cursor-pointer" onClick={()=>(navigate("/forgetpassword"))}>Forget Password?</div>
         <button
           className="absolute bottom-3 right-3 box-border px-[15px] py-[5px] text-white rounded-md bg-black"
           onClick={()=>handleSubmit()}
